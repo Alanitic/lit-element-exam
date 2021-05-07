@@ -8,20 +8,7 @@ import '@material/mwc-list';
 class SecretSanta extends LitElement {
   constructor() {
     super();
-    this.participants = [
-      {
-        pName: 'Alan',
-        gifts: ['taza'],
-      },
-      {
-        pName: 'Jose',
-        gifts: ['bufanda'],
-      },
-      {
-        pName: 'Rambo',
-        gifts: ['Arma'],
-      },
-    ];
+    this.participants = [];
   }
 
   static get properties() {
@@ -60,6 +47,14 @@ class SecretSanta extends LitElement {
     }
   }
 
+  _addParticipant(e) {
+    const newP = {
+      pName: this.participantName.value,
+      gifts: [],
+    };
+    this.participants = [...this.participants, newP];
+  }
+
   get addParticipant() {
     return this.shadowRoot.getElementById('addP');
   }
@@ -85,7 +80,13 @@ class SecretSanta extends LitElement {
           id="pName"
           label="Participante"
         ></mwc-textfield>
-        <mwc-button id="addP" raised disabled label="agregar"></mwc-button>
+        <mwc-button
+          id="addP"
+          @click="${this._addParticipant}"
+          raised
+          disabled
+          label="agregar"
+        ></mwc-button>
         <mwc-list>
           ${this.participants.map(
             (p) =>
