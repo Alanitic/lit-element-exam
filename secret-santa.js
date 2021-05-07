@@ -66,6 +66,14 @@ class SecretSanta extends LitElement {
     this.participants = [...this.participants, newP];
   }
 
+  _addGift(e) {
+    const id = e.target.id.replace('A', '');
+    const gName = this.shadowRoot.getElementById(id + 'N');
+    const currentP = this.participants.find((p) => p.id == id);
+    currentP.gifts = [...currentP.gifts, gName.value];
+    this.requestUpdate();
+  }
+
   get addParticipant() {
     return this.shadowRoot.getElementById('addP');
   }
@@ -115,6 +123,7 @@ class SecretSanta extends LitElement {
                   id="${p.id + 'A'}"
                   raised
                   disabled
+                  @click="${this._addGift}"
                   label="agregar"
                 ></mwc-button>
                 <mwc-list>
