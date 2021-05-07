@@ -9,12 +9,20 @@ class SecretSanta extends LitElement {
   constructor() {
     super();
     this.participants = [];
+    this.lottery = [];
+    this.lotteryDone = false;
   }
 
   static get properties() {
     return {
       participants: {
         type: Array,
+      },
+      lottery: {
+        type: Array,
+      },
+      lotteryDone: {
+        type: Boolean,
       },
     };
   }
@@ -35,6 +43,12 @@ class SecretSanta extends LitElement {
       mwc-button {
         --mdc-theme-primary: orange;
         --mdc-theme-on-primary: black;
+      }
+      .addressee {
+        color: red;
+      }
+      .sender {
+        color: green;
       }
     `;
   }
@@ -72,6 +86,23 @@ class SecretSanta extends LitElement {
     const currentP = this.participants.find((p) => p.id == id);
     currentP.gifts = [...currentP.gifts, gName.value];
     this.requestUpdate();
+  }
+
+  _doLottery() {
+    const max = this.participants.length - 1;
+    const res = [];
+    for (let index = 0; index < this.participants.length; index++) {
+      if (index === max) {
+        res.push([this.participants[max].pName, this.participants[0].pName]);
+      } else {
+        res.push([
+          this.participants[index].pName,
+          this.participants[index + 1].pName,
+        ]);
+      }
+    }
+    this.lottery = res;
+    this.lotteryDone = true;
   }
 
   get addParticipant() {
@@ -140,7 +171,33 @@ class SecretSanta extends LitElement {
               `
           )}
         </mwc-list>
-        <mwc-button raised label="hacer sorteo"></mwc-button>
+        ${this.participants.length > 2
+          ? html`
+            <mwc-button
+            raised
+            @click="${this._doLottery}"
+            label="hacer sorteo"
+          ></mwc-button>
+        </div>`
+          : html`
+            <mwc-button
+            raised
+            disabled
+            label="hacer sorteo"
+          ></mwc-button>
+        </div>`}
+        ${this.lotteryDone
+          ? html`
+              <h3>¡El sorteo está listo!</h3>
+              <p>
+                ${this.lottery.map(
+                  (p) =>
+                    html`<span class="sender">${p[0]}</span> le regala a
+                      <span class="addressee">${p[1]}</span><br />`
+                )}
+              </p>
+            `
+          : ''}
       </div>
     `;
   }
