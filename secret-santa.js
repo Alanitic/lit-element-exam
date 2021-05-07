@@ -47,8 +47,19 @@ class SecretSanta extends LitElement {
     }
   }
 
+  _giftChanged(e) {
+    let id = e.target.id.replace('N', 'A');
+    const currentGift = this.shadowRoot.getElementById(id);
+    if (e.target.value.length > 0) {
+      currentGift.removeAttribute('disabled');
+    } else {
+      currentGift.setAttribute('disabled', '');
+    }
+  }
+
   _addParticipant(e) {
     const newP = {
+      id: Math.random(),
       pName: this.participantName.value,
       gifts: [],
     };
@@ -95,8 +106,17 @@ class SecretSanta extends LitElement {
                   <span>${p.pName}</span>
                   <mwc-icon slot="graphic">account_circle</mwc-icon>
                 </mwc-list-item>
-                <mwc-textfield label="Regalo"></mwc-textfield>
-                <mwc-button raised label="agregar"></mwc-button>
+                <mwc-textfield
+                  id="${p.id + 'N'}"
+                  @change="${this._giftChanged}"
+                  label="Regalo"
+                ></mwc-textfield>
+                <mwc-button
+                  id="${p.id + 'A'}"
+                  raised
+                  disabled
+                  label="agregar"
+                ></mwc-button>
                 <mwc-list>
                   ${p.gifts.map(
                     (gift) => html`
